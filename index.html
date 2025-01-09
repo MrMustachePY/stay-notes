@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             height: 100vh;
             background-color: #f4f4f4;
         }
+
         .container {
             max-width: 500px;
             width: 100%;
@@ -23,30 +25,40 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-        .login-form, .note-form {
+
+        .login-form,
+        .note-form {
             display: none;
         }
-        .login-form.active, .note-form.active {
+
+        .login-form.active,
+        .note-form.active {
             display: block;
         }
-        input, textarea, button {
+
+        input,
+        textarea,
+        button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+
         button {
             background-color: #007bff;
             color: #fff;
             border: none;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <form class="login-form active" id="loginForm">
@@ -65,8 +77,10 @@
     </div>
 
     <script>
-        const username = "Othmane";
-        const password = "mama";
+        const users = [
+            { username: "Othmane", password: "Othmane" },
+            { username: "Douaa", password: "DouaaLOVE" }
+        ];
 
         const loginForm = document.getElementById("loginForm");
         const noteForm = document.getElementById("noteForm");
@@ -76,7 +90,9 @@
             const enteredUsername = document.getElementById("username").value;
             const enteredPassword = document.getElementById("password").value;
 
-            if (enteredUsername === username && enteredPassword === password) {
+            const user = users.find(u => u.username === enteredUsername && u.password === enteredPassword);
+
+            if (user) {
                 loginForm.classList.remove("active");
                 noteForm.classList.add("active");
                 loadNotes();
@@ -110,4 +126,5 @@
         }
     </script>
 </body>
+
 </html>
