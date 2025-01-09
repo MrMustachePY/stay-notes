@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note Cacher</title>
     <style>
+        /* Reset styles */
         * {
             margin: 0;
             padding: 0;
@@ -13,24 +14,25 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e1e1e;
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            background: #f5f5f7;
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 20px;
+            overflow: hidden;
+            padding: 0 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 500px;
             width: 100%;
-            background: #2c2c2c;
+            background: #fff;
+            border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            box-sizing: border-box;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.4s ease;
         }
 
         .login-form,
@@ -44,89 +46,110 @@
         }
 
         h2 {
-            font-size: 28px;
+            font-size: 24px;
             margin-bottom: 20px;
             text-align: center;
-        }
-
-        h3 {
-            font-size: 22px;
-            margin-top: 30px;
-            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
         }
 
         input,
         textarea,
         button {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             margin: 12px 0;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background-color: #333;
-            color: #fff;
+            border-radius: 15px;
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            color: #333;
             font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        button:focus {
+            outline: none;
+            border-color: #1d72b8;
+            box-shadow: 0 0 10px rgba(29, 114, 184, 0.3);
         }
 
         button {
-            background-color: #007bff;
+            background-color: #007aff;
+            color: white;
             cursor: pointer;
-            transition: background-color 0.3s;
+            border: none;
+            font-weight: 600;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #0051a8;
+        }
+
+        button:active {
+            background-color: #003a8c;
         }
 
         .note-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             margin-top: 20px;
         }
 
         .note-item {
-            background: #3a3a3a;
-            border-radius: 8px;
-            padding: 15px;
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
             position: relative;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
         }
 
         .note-item:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
         }
 
         .delete-btn {
-            background-color: #222021;
+            background-color: #ff3b30;
             color: white;
-            transition: background-color 0.3s;
-            border-radius: 50%;
+            padding: 8px;
+            font-size: 9px;
         }
 
         .delete-btn:hover {
-            background-color: #c82333;
+            background-color: #ff2a1d;
         }
 
         .login-feedback {
-            color: #28a745;
-            font-size: 16px;
             text-align: center;
+            font-size: 14px;
+            color: #28a745;
         }
 
         .login-feedback.error {
-            color: #dc3545;
+            color: #ff3b30;
+        }
+
+        /* Smooth transition effect */
+        .form-wrapper {
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        .form-wrapper.fade-out {
+            opacity: 0;
         }
 
         /* Responsive Design */
         @media (max-width: 600px) {
             .container {
-                padding: 20px;
+                padding: 25px;
             }
 
             .note-list {
-                grid-template-columns: 1fr;
+                gap: 10px;
             }
         }
     </style>
@@ -134,14 +157,17 @@
 
 <body>
     <div class="container">
-        <form class="login-form active" id="loginForm">
+        <!-- Login Form -->
+        <form class="login-form active form-wrapper" id="loginForm">
             <h2>Login</h2>
             <input type="text" id="username" placeholder="Enter your name" required />
             <input type="password" id="password" placeholder="Enter your code" required />
             <button type="button" onclick="login()">Login</button>
             <div id="loginFeedback" class="login-feedback"></div>
         </form>
-        <form class="note-form" id="noteForm">
+
+        <!-- Notes Form -->
+        <form class="note-form form-wrapper" id="noteForm">
             <h2>Your Notes</h2>
             <textarea id="note" placeholder="Write your note here..." rows="5"></textarea>
             <button type="button" onclick="saveNote()">Save Note</button>
@@ -169,16 +195,21 @@
             const user = users.find(u => u.username === enteredUsername && u.password === enteredPassword);
 
             if (user) {
-                loginForm.classList.remove("active");
-                noteForm.classList.add("active");
                 loginFeedback.textContent = "Login successful!";
                 loginFeedback.classList.remove("error");
                 loginFeedback.style.color = "#28a745"; // Green
-                loadNotes();
+
+                // Fade out the login form
+                loginForm.classList.add("fade-out");
+                setTimeout(() => {
+                    loginForm.classList.remove("active", "fade-out");
+                    noteForm.classList.add("active");
+                    loadNotes();
+                }, 400);
             } else {
                 loginFeedback.textContent = "Incorrect name or code!";
                 loginFeedback.classList.add("error");
-                loginFeedback.style.color = "#dc3545"; // Red
+                loginFeedback.style.color = "#ff3b30"; // Red
             }
         }
 
